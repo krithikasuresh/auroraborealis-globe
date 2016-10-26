@@ -1,1 +1,0 @@
-# auroraborealis-globe
