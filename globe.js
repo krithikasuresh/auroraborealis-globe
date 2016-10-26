@@ -206,7 +206,7 @@ function addData(data, opts) {
           lng = data[i + 1];
       color = colorFnWrapper(data,i);
       size = data[i + 2];
-      size = size*20;
+      size = size*100;
       addPoint(lat, lng, size, color, subgeo);
     }
     if (opts.animated) {
@@ -253,8 +253,6 @@ function addData(data, opts) {
         point.position.x = 200 * Math.sin(phi) * Math.cos(theta);
         point.position.y = 200 * Math.cos(phi);
         point.position.z = 200 * Math.sin(phi) * Math.sin(theta);
-
-        console.log("x: " + point.position.x + " y: " + point.position.y + " z: " + point.position.z);
 
         point.lookAt(mesh.position);
 

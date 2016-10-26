@@ -169,14 +169,13 @@
 
 
                 xhr = new XMLHttpRequest();
-                xhr.open('GET', 'fireballdata.json', true);
+                xhr.open('GET', 'cleanAuroraData.json', true);
                 xhr.onreadystatechange = function(e) {
                     if (xhr.readyState === 4) {
                         if (xhr.status === 200) {
                             var data = JSON.parse(xhr.responseText);
                             window.data = data;
                             for (i=0;i<data.length;i++) {
-                                console.log("Sending data: " + data[i][1]);
                                 globe.addData(data[i][1], {format: 'magnitude', name: data[i][0], animated: true});
                             }
                             globe.createPoints();
