@@ -1,38 +1,35 @@
-
-# coding: utf-8
-
-# In[210]:
+# In[222]:
 
 from bs4 import BeautifulSoup
 import requests
 import json
 import re
 import time
+
 starttime=time.time()
 while True:
-    print "tick"
-    # In[211]:
+    # In[223]:
 
     r = requests.get("http://services.swpc.noaa.gov/text/aurora-nowcast-map.txt")
 
 
-    # In[212]:
+    # In[224]:
 
     soup = BeautifulSoup(r.text, 'lxml')
 
 
-    # In[213]:
+    # In[225]:
 
     text = soup.find('p').text
 
 
-    # In[214]:
+    # In[226]:
 
     regex = r" +"
     lines = text.split('\n')
 
 
-    # In[215]:
+    # In[227]:
 
     i = 0
     while True:
@@ -41,13 +38,13 @@ while True:
         i += 1
 
 
-    # In[216]:
+    # In[228]:
 
     data_lines = lines[i:-1]
     data = list(map(lambda x: re.split(regex, x)[1:], data_lines))
 
 
-    # In[217]:
+    # In[229]:
 
     #latitude inc, longitude inc, points array to hold data
     lat_inc = 0.3515625
@@ -55,17 +52,15 @@ while True:
     points = []
 
 
-    # In[218]:
+    # In[230]:
 
     i = 0
     for i, group in enumerate(data):
         for j in group:
             points.append([-90 + lat_inc*i, 0, j])
-    print points[523270]
-    print len(points)
 
 
-    # In[219]:
+    # In[231]:
 
     mult = 0
     #hold the correctly formatted array of data 
@@ -76,12 +71,8 @@ while True:
         new_points.append([p[0], -180 + long_inc*mult, p[2]])
         mult += 1
 
-    #print new_points[52480:]
-    print mult
-    print len(new_points)
 
-
-    # In[220]:
+    # In[232]:
 
     zeros = 0
     clean_data = []
@@ -91,7 +82,7 @@ while True:
     for i, p in enumerate(new_points):
         if i % 1024 == 0:
             mult = 0
-        if float(p[2]) > 5:
+        if float(p[2]) > 10:
             new_data.append([int(p[0]), int(p[1]), (float(p[2])/100)])
         else:
             zeros += 1
@@ -100,15 +91,12 @@ while True:
     for i, p in enumerate(new_data):
         if i and i % 1024 == 0:
             mult = 0
-        if mult % 5 == 0:
+        if mult % 4 == 0:
             clean_data.append([p[0], p[1], p[2]])
         mult += 1
 
-    print len(clean_data)
-    print len(new_data)
 
-
-    # In[221]:
+    # In[233]:
 
     cleaner_data = []
     for i in range(len(clean_data)):
@@ -116,13 +104,11 @@ while True:
 
     final_data = [["Aurora Borealis View Prediction", cleaner_data]]
 
-    print len(cleaner_data)
-    print len(final_data)
-
 
     # In[171]:
 
     with open('cleanAuroraData.json', 'w') as outfile:
         json.dump(final_data, outfile)
         
-    time.sleep(60.0 - ((time.time() - starttime) % 60.0))
+    time.sleep(3600.0 - ((time.time() - starttime) % 3600.0))
+
